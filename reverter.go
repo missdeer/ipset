@@ -1,7 +1,6 @@
 package ipset
 
 import (
-	"log"
 	"net"
 	"strings"
 
@@ -40,8 +39,7 @@ func (r *ResponseReverter) WriteMsg(res *dns.Msg) error {
 		}
 		ip := net.ParseIP(ss[4])
 		for _, listName := range r.listNames {
-			// add IP to listName
-			log.Println("add IP", ip, "to list", listName)
+			addIP(ip, listName)
 		}
 	}
 	return r.ResponseWriter.WriteMsg(res)
