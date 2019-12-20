@@ -3,20 +3,21 @@
 package ipset
 
 import (
+	goipset "github.com/digineo/go-ipset/v2"
+	"github.com/mdlayher/netlink"
 	"github.com/ti-mo/netfilter"
-	ipset "gopkg.in/digineo/go-ipset.v2"
 	"net"
 )
 
 var (
-	c ipset.Conn
+	c *goipset.Conn
 )
 
-func initLib() {
-	c = ipset.Conn{ipset.Family: netfilter.ProtoIPv4}
+func initLib() (err error) {
+	c, err = goipset.Dial(netfilter.ProtoIPv4, &netlink.Config{})
+	return
 }
 
 func addIP(ip net.IP, list string) error {
-	c.Add(list, NewEntry(EntryIP(ip)))
-	return nil
+	return c.Add(list, goipset.NewEntry(goipset.EntryIP(ip)))
 }
