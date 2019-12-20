@@ -30,6 +30,7 @@ func setup(c *caddy.Controller) error {
 		return N{Next: next, listName: listName}
 	})
 
+	initLib()
 	return nil
 }
 
