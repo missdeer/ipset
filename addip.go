@@ -11,3 +11,7 @@ func initLib() error {
 func addIP(ip net.IP, list string) error {
 	return nil
 }
+
+func shutdownLib() error {
+	return nil
+}

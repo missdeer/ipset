@@ -30,7 +30,17 @@ func setup(c *caddy.Controller) error {
 		return N{Next: next, listName: listName}
 	})
 
-	initLib()
+	log.Debug("ipset plugin has list:", listName)
+	if len(listName) > 0 {
+		c.OnStartup(func() error {
+			return initLib()
+		})
+
+		c.OnShutdown(func() error {
+			return shutdownLib()
+		})
+	}
+
 	return nil
 }
 
@@ -39,8 +49,10 @@ func (n N) ServeDNS(ctx context.Context, w dns.ResponseWriter, r *dns.Msg) (int,
 	wr := NewResponseReverter(w, r, n.listName)
 
 	if len(n.listName) == 0 {
+		log.Debug("no list name")
 		return plugin.NextOrFailure(n.Name(), n.Next, ctx, w, r)
 	}
+	log.Debug("has list", n.listName)
 	return plugin.NextOrFailure(n.Name(), n.Next, ctx, wr, r)
 }
 

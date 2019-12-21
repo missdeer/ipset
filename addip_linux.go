@@ -21,3 +21,11 @@ func initLib() (err error) {
 func addIP(ip net.IP, list string) error {
 	return c.Add(list, goipset.NewEntry(goipset.EntryIP(ip)))
 }
+
+func flushSet(list string) error {
+	return c.Flush(list)
+}
+
+func shutdownLib() error {
+	return c.Close()
+}

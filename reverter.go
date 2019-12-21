@@ -4,8 +4,11 @@ import (
 	"net"
 	"strings"
 
+	clog "github.com/coredns/coredns/plugin/pkg/log"
 	"github.com/miekg/dns"
 )
+
+var log = clog.NewWithPlugin("ipset")
 
 // ResponseReverter reverses the operations done on the question section of a packet.
 // This is need because the client will otherwise disregards the response, i.e.
@@ -27,6 +30,7 @@ func NewResponseReverter(w dns.ResponseWriter, r *dns.Msg, listNames []string) *
 
 // WriteMsg records the status code and calls the underlying ResponseWriter's WriteMsg method.
 func (r *ResponseReverter) WriteMsg(res *dns.Msg) error {
+	log.Debug("ipset WriteMsg:", r.originalQuestion.Name)
 	res.Question[0] = r.originalQuestion
 	for _, rr := range res.Answer {
 		if rr.Header().Rrtype != dns.TypeA && rr.Header().Rrtype != dns.TypeAAAA {
@@ -39,7 +43,8 @@ func (r *ResponseReverter) WriteMsg(res *dns.Msg) error {
 		}
 		ip := net.ParseIP(ss[4])
 		for _, listName := range r.listNames {
-			addIP(ip, listName)
+			err := addIP(ip, listName)
+			log.Debug("add IP:", ip, " to ipset:", listName, ", result:", err)
 		}
 	}
 	return r.ResponseWriter.WriteMsg(res)
