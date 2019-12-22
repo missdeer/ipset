@@ -10,7 +10,7 @@ func initLib() error {
 }
 
 func addIP(ip net.IP, list string) error {
-	log.Debug("add IP:", ip, " to ipset:", listName)
+	log.Debug("add IP:", ip, " to ipset:", list)
 	return nil
 }
 
