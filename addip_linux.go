@@ -19,6 +19,7 @@ func initLib() (err error) {
 }
 
 func addIP(ip net.IP, list string) error {
+	AddIPCount.WithLabelValues(list).Add(1)
 	return c.Add(list, goipset.NewEntry(goipset.EntryIP(ip)))
 }
 
