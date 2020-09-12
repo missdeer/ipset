@@ -5,7 +5,6 @@ import (
 
 	"github.com/coredns/coredns/core/dnsserver"
 	"github.com/coredns/coredns/plugin"
-	"github.com/coredns/coredns/plugin/metrics"
 
 	"github.com/caddyserver/caddy"
 	"github.com/miekg/dns"
@@ -32,7 +31,6 @@ func setup(c *caddy.Controller) error {
 
 	if len(listName) > 0 {
 		c.OnStartup(func() error {
-			metrics.MustRegister(c, AddIPCount)
 			return initLib()
 		})
 
