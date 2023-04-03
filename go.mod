@@ -4,7 +4,7 @@ go 1.13
 
 require (
 	github.com/coredns/caddy v1.1.1
-	github.com/coredns/coredns v1.6.9
+	github.com/coredns/coredns v1.10.1
 	github.com/digineo/go-ipset/v2 v2.2.1
 	github.com/mdlayher/netlink v1.1.0
 	github.com/miekg/dns v1.1.53
