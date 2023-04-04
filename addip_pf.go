@@ -1,3 +1,4 @@
+//go:build freebsd || openbsd || netbsd || dragonflybsd || darwin
 // +build freebsd openbsd netbsd dragonflybsd darwin
 
 package ipset
@@ -5,7 +6,6 @@ package ipset
 import (
 	"bytes"
 	"errors"
-	"fmt"
 	"net"
 	"os/exec"
 	"strings"
@@ -21,7 +21,7 @@ func initLib() (err error) {
 	var stdout bytes.Buffer
 	cmd.Stdout = &stdout
 
-	err := cmd.Run()
+	err = cmd.Run()
 	if err != nil {
 		return errors.New("Error running pfctl command: " + err.Error())
 	}
@@ -110,5 +110,5 @@ func flushSet(list string) error {
 }
 
 func shutdownLib() error {
-	return c.Close()
+	return nil
 }
