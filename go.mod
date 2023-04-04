@@ -9,5 +9,5 @@ require (
 	github.com/mdlayher/netlink v1.7.1
 	github.com/miekg/dns v1.1.53
 	github.com/prometheus/client_golang v1.14.0
-	github.com/ti-mo/netfilter v0.3.1
+	github.com/ti-mo/netfilter v0.5.0
 )
