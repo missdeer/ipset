@@ -17,15 +17,32 @@ type ResponseReverter struct {
 	dns.ResponseWriter
 	originalQuestion dns.Question
 	listNames        []string
+	mappedListName   map[string][]string
 }
 
 // NewResponseReverter returns a pointer to a new ResponseReverter.
-func NewResponseReverter(w dns.ResponseWriter, r *dns.Msg, listNames []string) *ResponseReverter {
+func NewResponseReverter(w dns.ResponseWriter, r *dns.Msg, listNames []string, mappedListName map[string][]string) *ResponseReverter {
 	return &ResponseReverter{
 		ResponseWriter:   w,
 		originalQuestion: r.Question[0],
 		listNames:        listNames,
+		mappedListName:   mappedListName,
 	}
+}
+
+func (r *ResponseReverter) HitDomainList(domain string, domains []string) bool {
+	ss := strings.Split(domain, ".")
+
+	for i := 0; i < len(ss); i++ {
+		n := strings.Join(ss[i:], ".")
+
+		for _, domainInList := range domains {
+			if strings.ToLower(n) == strings.ToLower(domainInList) {
+				return true
+			}
+		}
+	}
+	return false
 }
 
 // WriteMsg records the status code and calls the underlying ResponseWriter's WriteMsg method.
@@ -44,6 +61,13 @@ func (r *ResponseReverter) WriteMsg(res *dns.Msg) error {
 		for _, listName := range r.listNames {
 			if err := addIP(ip, listName); err != nil {
 				log.Error("add IP:", ip, " to ipset:", listName, ", result:", err)
+			}
+		}
+		for listName, domains := range r.mappedListName {
+			if r.HitDomainList(r.originalQuestion.Name, domains) {
+				if err := addIP(ip, listName); err != nil {
+					log.Error("add IP:", ip, " to ipset:", listName, ", result:", err)
+				}
 			}
 		}
 	}
