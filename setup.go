@@ -45,7 +45,7 @@ func setup(c *caddy.Controller) error {
 		return N{Next: next, listName: listName, mappedListName: mappedListName}
 	})
 
-	if len(listName) > 0 {
+	if len(listName) > 0 || len(mappedListName) > 0 {
 		c.OnStartup(func() error {
 			return initLib()
 		})
@@ -60,12 +60,12 @@ func setup(c *caddy.Controller) error {
 
 // ServeDNS implements the plugin.Handler interface.
 func (n N) ServeDNS(ctx context.Context, w dns.ResponseWriter, r *dns.Msg) (int, error) {
-	wr := NewResponseReverter(w, r, n.listName, n.mappedListName)
+	newWriter := NewResponseReverter(w, r, n.listName, n.mappedListName)
 
-	if len(n.listName) == 0 {
+	if len(n.listName) == 0 && len(n.mappedListName) == 0 {
 		return plugin.NextOrFailure(n.Name(), n.Next, ctx, w, r)
 	}
-	return plugin.NextOrFailure(n.Name(), n.Next, ctx, wr, r)
+	return plugin.NextOrFailure(n.Name(), n.Next, ctx, newWriter, r)
 }
 
 // Name implements the Handler interface.

@@ -60,13 +60,13 @@ func (r *ResponseReverter) WriteMsg(res *dns.Msg) error {
 		ip := net.ParseIP(ss[4])
 		for _, listName := range r.listNames {
 			if err := addIP(ip, listName); err != nil {
-				log.Error("add IP:", ip, " to ipset:", listName, ", result:", err)
+				log.Error("adding IP:", ip, " to ipset:", listName, " failed, result:", err)
 			}
 		}
 		for listName, domains := range r.mappedListName {
 			if r.HitDomainList(r.originalQuestion.Name, domains) {
 				if err := addIP(ip, listName); err != nil {
-					log.Error("add IP:", ip, " to ipset:", listName, ", result:", err)
+					log.Error("adding IP:", ip, " to ipset:", listName, " failed, result:", err)
 				}
 			}
 		}
