@@ -1,4 +1,5 @@
-// +build !linux,!freebsd,!openbsd,!netbsd,!dragonflybsd,!darwin
+//go:build !linux && !freebsd && !openbsd && !netbsd && !dragonfly && !darwin
+// +build !linux,!freebsd,!openbsd,!netbsd,!dragonfly,!darwin
 
 package ipset
 

@@ -16,3 +16,17 @@ ipset plugin for CoreDNS
         log
 }
 ```
+
+On macOS, ipset writes directly to `/dev/pf` through `github.com/leiless/dnsredir/pf`.
+Run CoreDNS with permission to open `/dev/pf`; building requires CGO and the PF headers
+described in dnsredir's `pf/download-pf-headers.sh`.
+Use `NAME:ANCHOR` to select an anchored table, for example:
+
+```text
+ipset {
+    direct_cidr:com.apple/climbovergui example.com
+}
+```
+
+Tables must already exist. Duplicate addresses are handled by PF, and shutdown does
+not flush tables owned by other applications.
